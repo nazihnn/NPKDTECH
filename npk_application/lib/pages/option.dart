@@ -1,40 +1,37 @@
 import 'package:flutter/material.dart';
 
+class PageOne extends StatelessWidget {
+  const PageOne({super.key});
 
-class FirstPage extends StatelessWidget {
-  const FirstPage({Key? key, required this.title}) : super(key: key);
-  final String title;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(title),
+        title: Text("Page One"),
       ),
       body: Center(
-        child: TextButton(
-          onPressed: () {Navigator.push(context, MaterialPageRoute(builder: (context) {
-              return const SecondPage(title: 'SecondPage');
-              }));},
-          child: const Text('Next'),
+        child: Text(
+          "Welcome to Page One!",
+          style: TextStyle(fontSize: 24),
         ),
       ),
     );
   }
 }
 
-class SecondPage extends StatelessWidget {
-  const SecondPage({Key? key, required this.title}) : super(key: key);
-  final String title;
+class PageTwo extends StatelessWidget {
+  const PageTwo({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(title),
+        title: Text("Page Two"),
       ),
       body: Center(
-        child: TextButton(
-          onPressed: () {},
-          child: const Text('Go Back'),
+        child: Text(
+          "Welcome to Page Two!",
+          style: TextStyle(fontSize: 24),
         ),
       ),
     );
