@@ -25,9 +25,13 @@ class HomePage  extends StatelessWidget {
                   MaterialPageRoute(builder: (context) => const PageOne()),
                 );
               },
-              child: Text("Go to Page One"),
+              style : ElevatedButton.styleFrom(
+                minimumSize: Size(400, 100)
+              ),
+              child: Text("Track Robot Locaon"),
             ),
-            SizedBox(height: 20),
+            
+            SizedBox(height: 40),
             ElevatedButton(
               onPressed: () {
                 Navigator.push(
@@ -35,7 +39,25 @@ class HomePage  extends StatelessWidget {
                   MaterialPageRoute(builder: (context) => const PageTwo()),
                 );
               },
-              child: Text("Go to Page Two"),
+              style : ElevatedButton.styleFrom(
+                minimumSize: Size(400, 100)
+              ),
+              child: Text("Check Lates Data"),
+            ),
+            
+
+            SizedBox(height: 40),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const PageTwo()),
+                );
+              },
+              style : ElevatedButton.styleFrom(
+                minimumSize: Size(400, 100)
+              ),
+              child: Text("Robot status"),
             ),
           ],
         ),
