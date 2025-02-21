@@ -21,7 +21,7 @@ class HomePage extends StatelessWidget {
       ),
       body: Column(
         children: const [
-          TitleBox(title: "Welcome to the Robot Control Panel"),
+          TitleBox(title: "Robot ID"),
           Expanded(
             child: ButtonGroup(),
           ),
