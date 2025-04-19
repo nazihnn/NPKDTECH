@@ -1,3 +1,4 @@
+import 'title_box.dart';
 import 'package:flutter/material.dart';
 
 class LocationPage extends StatelessWidget {
@@ -6,17 +7,25 @@ class LocationPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Robot Location"),
-      ),
-      body: Center(
-        child: Text(
-          "coordiantes:",
-          style: TextStyle(fontSize: 24),
-        ),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(
+                top: 25.0), // Adjust the top padding as needed
+            child: TitleBox(
+              title: "Robot Location",
+            ),
+          ),
+          Expanded(
+            child: Center(
+              child: Text(
+                "coordinates:",
+                style: TextStyle(fontSize: 24),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
 }
-
-

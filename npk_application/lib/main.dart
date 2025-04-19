@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+import './pages/home.dart'; // Import your HomePage class
 // import 'package:flutter/material.dart';
 // import 'package:npk_application/pages/home.dart';
 
@@ -12,14 +14,11 @@
 //   @override
 //   Widget build(BuildContext context) {
 //     return MaterialApp(
-      
+
 //       home: const HomePage(),
 //     );
 //   }
 // }
-
-import 'package:flutter/material.dart';
-import './pages/home.dart'; // Import your HomePage class
 
 void main() {
   runApp(const MyApp());

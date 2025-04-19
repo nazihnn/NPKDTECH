@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-
 class SensorPage extends StatelessWidget {
   const SensorPage({super.key});
 

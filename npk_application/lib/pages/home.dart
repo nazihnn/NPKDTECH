@@ -1,9 +1,6 @@
-import 'package:flutter/material.dart';
-import 'location.dart';
-import 'sensor.dart';
-import 'status.dart';
 import 'title_box.dart';
 import 'button_group.dart';
+import 'package:flutter/material.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -22,6 +19,9 @@ class HomePage extends StatelessWidget {
       body: Column(
         children: const [
           TitleBox(title: "Robot ID"),
+          Padding(
+            padding: EdgeInsets.symmetric(vertical: 16.0),
+          ),
           Expanded(
             child: ButtonGroup(),
           ),
