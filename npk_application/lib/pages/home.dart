@@ -18,7 +18,7 @@ class HomePage extends StatelessWidget {
       ),
       body: Column(
         children: const [
-          TitleBox(title: "Robot ID"),
+          TitleBox(title: "Robot ID", icon: Icons.home),
           Padding(
             padding: EdgeInsets.symmetric(vertical: 16.0),
           ),
