@@ -11,7 +11,14 @@ class SignupPage extends StatelessWidget {
     String? errorMessage;
 
     return Scaffold(
-      body: Padding(
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Color(0xFFA8E063), Color.fromARGB(255, 187, 221, 172)],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
         padding: const EdgeInsets.all(24.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -55,6 +62,13 @@ class SignupPage extends StatelessWidget {
                 // Trigger a rebuild to show the error message
                 (context as Element).markNeedsBuild();
               },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.deepOrange,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 12,
+                ),
+              ),
               child: const Text("Sign Up"),
             ),
           ],
