@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "824176469521",
+    "project_id": "npkdtech",
+    "storage_bucket": "npkdtech.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:824176469521:android:0ddf846db457ef6576b3b0",
+        "android_client_info": {
+          "package_name": "com.example.npk_application"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBqdg4O7v1jpJntqB7QC5tV4om1pBzqngA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

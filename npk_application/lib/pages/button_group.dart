@@ -23,11 +23,11 @@ class ButtonGroup extends StatelessWidget {
             },
             style: ElevatedButton.styleFrom(
               minimumSize: const Size(400, 100),
-              backgroundColor: oliveGreen,
+              backgroundColor: Color.fromARGB(255, 247, 247, 247),
               foregroundColor: Colors.black54,
               side: BorderSide(
-                color: const Color.fromARGB(255, 0, 0, 0), // Border color
-                width: 10, // Border width
+                color: Colors.deepOrange.shade600,
+                width: 5, // Border width
               ),
             ),
             child: const Text(
