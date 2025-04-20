@@ -3,6 +3,7 @@ import 'signup_page.dart';
 import 'package:flutter/material.dart';
 import 'package:npk_application/pages/home.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:npk_application/pages/main_page.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});

@@ -2,6 +2,7 @@ import 'login_page.dart';
 import 'package:flutter/material.dart';
 import '../main.dart'; // your MainPage widget
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:npk_application/pages/main_page.dart';
 
 class AuthGate extends StatelessWidget {
   const AuthGate({super.key});
