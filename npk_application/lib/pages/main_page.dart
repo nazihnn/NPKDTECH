@@ -31,14 +31,14 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'NPKDTECH',
-          style: TextStyle(color: Colors.black54, fontWeight: FontWeight.bold),
-        ),
-        centerTitle: true,
-        backgroundColor: Colors.lightGreen,
-      ),
+      // appBar: AppBar(
+      //   title: const Text(
+      //     'NPKDTECH',
+      //     style: TextStyle(color: Colors.black54, fontWeight: FontWeight.bold),
+      //   ),
+      //   centerTitle: true,
+      //   backgroundColor: Colors.lightGreen,
+      // ),
       body: _pages[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
@@ -50,7 +50,8 @@ class _MainPageState extends State<MainPage> {
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
           BottomNavigationBarItem(icon: Icon(Icons.sensors), label: 'Sensor'),
-          BottomNavigationBarItem(icon: Icon(Icons.location_on), label: 'Location'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.location_on), label: 'Location'),
           BottomNavigationBarItem(icon: Icon(Icons.info), label: 'Status'),
         ],
       ),
