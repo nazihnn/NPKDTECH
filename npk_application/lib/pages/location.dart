@@ -15,6 +15,15 @@ class _LocationPageState extends State<LocationPage> {
   bool isConnected = false;
   String connectionError = "";
 
+  // Store parsed coordinates for the grid
+  double xCoord = 0;
+  double yCoord = 0;
+
+  // Define grid size and scale factors
+  final double gridSize = 250;
+  final double maxX = 150; // Adjust based on max expected value
+  final double maxY = 150; // Adjust based on max expected value
+
   @override
   void initState() {
     super.initState();
@@ -64,14 +73,20 @@ class _LocationPageState extends State<LocationPage> {
     if (data != null) {
       print("Processing location data: $data");
       setState(() {
+        // Update text display values
         locationData = {
           "x": data["x"]?.toString() ?? "No data",
           "y": data["y"]?.toString() ?? "No data"
         };
+
+        // Parse for grid positioning
+        xCoord = double.tryParse(data["x"]?.toString() ?? "0") ?? 0;
+        yCoord = double.tryParse(data["y"]?.toString() ?? "0") ?? 0;
+
         isConnected = true;
         connectionError = "";
       });
-      print("State updated with location: $locationData");
+      print("State updated with location: {x: $xCoord, y: $yCoord}");
     } else {
       print("Location data is null");
     }
@@ -94,7 +109,7 @@ class _LocationPageState extends State<LocationPage> {
         children: [
           // Title Box
           Padding(
-            padding: const EdgeInsets.only(top: 25.0),
+            padding: const EdgeInsets.only(top: 1.0),
             child: TitleBox(
               title: "Robot Location",
               icon: Icons.location_on,
@@ -128,7 +143,7 @@ class _LocationPageState extends State<LocationPage> {
           // Coordinate Box (combined X and Y)
           Padding(
             padding:
-                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 1.0),
             child: Container(
               padding: const EdgeInsets.all(16.0),
               decoration: BoxDecoration(
@@ -178,30 +193,84 @@ class _LocationPageState extends State<LocationPage> {
             ),
           ),
 
-          // Map Title Box (you can keep or remove this as needed)
+          // // Map Title Box
+          // Padding(
+          //   padding: const EdgeInsets.symmetric(vertical: 8.0),
+          //   child: Container(
+          //     padding: const EdgeInsets.all(16.0),
+          //     margin: const EdgeInsets.symmetric(horizontal: 16.0),
+          //     decoration: BoxDecoration(
+          //       color: Colors.white,
+          //       borderRadius: BorderRadius.circular(12),
+          //       border: Border.all(
+          //         color: Colors.deepOrange.shade600,
+          //         width: 2,
+          //       ),
+          //     ),
+          //     child: Text(
+          //       "Current Location",
+          //       style: TextStyle(
+          //         fontSize: 22,
+          //         fontWeight: FontWeight.w600,
+          //         color: Colors.black87,
+          //       ),
+          //     ),
+          //   ),
+          // ),
+
+          // Grid visualization
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            padding: const EdgeInsets.all(16.0),
             child: Container(
-              padding: const EdgeInsets.all(16.0),
-              margin: const EdgeInsets.symmetric(horizontal: 16.0),
+              width: gridSize,
+              height: gridSize,
               decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                  color: Colors.deepOrange.shade600,
-                  width: 2,
-                ),
+                border: Border.all(color: Colors.grey.shade800, width: 2),
+                borderRadius: BorderRadius.circular(4),
               ),
-              child: Text(
-                "Current Location", // Changed from "Map Title Here"
-                style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.black87,
+              child: CustomPaint(
+                painter: GridPainter(
+                  xCoord: xCoord,
+                  yCoord: yCoord,
+                  maxX: maxX,
+                  maxY: maxY,
                 ),
+                size: Size(gridSize, gridSize),
               ),
             ),
           ),
+
+          // Grid labels
+          // Container(
+          //   width: gridSize,
+          //   padding: const EdgeInsets.only(top: 4),
+          //   child: Row(
+          //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //     children: [
+          //       Text('0', style: TextStyle(fontSize: 12)),
+          //       Text('X: ${maxX.toInt()}', style: TextStyle(fontSize: 12)),
+          //     ],
+          //   ),
+          // ),
+
+          // Row(
+          //   mainAxisAlignment: MainAxisAlignment.center,
+          //   children: [
+          //     Container(
+          //       height: gridSize,
+          //       padding: const EdgeInsets.only(right: 4),
+          //       child: Column(
+          //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //         children: [
+          //           Text('Y: ${maxY.toInt()}', style: TextStyle(fontSize: 12)),
+          //           // Text('0', style: TextStyle(fontSize: 12)),
+          //         ],
+          //       ),
+          //     ),
+          //     SizedBox(width: gridSize),
+          //   ],
+          // ),
 
           // Debug refresh button
           Padding(
@@ -230,5 +299,68 @@ class _LocationPageState extends State<LocationPage> {
         ],
       ),
     );
+  }
+}
+
+// Custom painter for drawing the grid and position marker
+class GridPainter extends CustomPainter {
+  final double xCoord;
+  final double yCoord;
+  final double maxX;
+  final double maxY;
+
+  GridPainter({
+    required this.xCoord,
+    required this.yCoord,
+    required this.maxX,
+    required this.maxY,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final double cellWidth = size.width / 10;
+    final double cellHeight = size.height / 10;
+
+    // Draw grid lines
+    final gridPaint = Paint()
+      ..color = Colors.grey.shade300
+      ..strokeWidth = 1;
+
+    // Draw horizontal grid lines
+    for (int i = 0; i <= 10; i++) {
+      double y = i * cellHeight;
+      canvas.drawLine(Offset(0, y), Offset(size.width, y), gridPaint);
+    }
+
+    // Draw vertical grid lines
+    for (int i = 0; i <= 10; i++) {
+      double x = i * cellWidth;
+      canvas.drawLine(Offset(x, 0), Offset(x, size.height), gridPaint);
+    }
+
+    // Calculate robot position on grid
+    final double xPos = (xCoord / maxX) * size.width;
+    // Invert Y coordinate because screen coordinates increase downward
+    final double yPos = size.height - (yCoord / maxY) * size.height;
+
+    // Draw position marker (robot location)
+    final markerPaint = Paint()
+      ..color = Colors.red
+      ..style = PaintingStyle.fill;
+
+    canvas.drawCircle(Offset(xPos, yPos), 8, markerPaint);
+
+    // Draw border ring around marker
+    final markerBorderPaint = Paint()
+      ..color = Colors.black
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.5;
+
+    canvas.drawCircle(Offset(xPos, yPos), 8, markerBorderPaint);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    return true; // Always repaint when new data comes in
   }
 }
