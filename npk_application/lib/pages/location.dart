@@ -13,8 +13,9 @@ class LocationPage extends StatefulWidget {
 class _LocationPageState extends State<LocationPage> {
   final DatabaseReference _uwbDatabaseRef =
       FirebaseDatabase.instance.ref("UWB/");
+  // Updated to use the Outside node for GPS data
   final DatabaseReference _gpsDatabaseRef =
-      FirebaseDatabase.instance.ref("GPS/");
+      FirebaseDatabase.instance.ref("Outside/");
 
   // UWB data
   Map<String, String> uwbData = {"x": "Loading...", "y": "Loading..."};
@@ -23,8 +24,8 @@ class _LocationPageState extends State<LocationPage> {
 
   // GPS data
   Map<String, dynamic> gpsData = {
-    "latitude": 37.422, // Default coordinate (Google HQ)
-    "longitude": -122.084, // Default coordinate (Google HQ)
+    "latitude": 0.0, // Default coordinate
+    "longitude": 0.0, // Default coordinate
     "connected": false,
     "error": ""
   };
@@ -126,7 +127,7 @@ class _LocationPageState extends State<LocationPage> {
   }
 
   void _listenToGpsDatabase() {
-    print("Setting up GPS location database listener");
+    print("Setting up GPS location database listener from Outside node");
 
     // First try to get the data once
     _gpsDatabaseRef.get().then((DataSnapshot snapshot) {
@@ -169,15 +170,30 @@ class _LocationPageState extends State<LocationPage> {
   void _updateGpsData(Map<dynamic, dynamic>? data) {
     if (data != null) {
       print("Processing GPS location data: $data");
+
+      // Extract latitude and longitude directly from Outside node
+      final latitudeStr = data["latitude"]?.toString() ?? "0.0";
+      final longitudeStr = data["longitude"]?.toString() ?? "0.0";
+
+      // Convert to numbers and remove quotes if present
+      final latitudeClean = latitudeStr.replaceAll('"', '');
+      final longitudeClean = longitudeStr.replaceAll('"', '');
+
       setState(() {
         // Parse latitude and longitude
-        gpsData["latitude"] =
-            double.tryParse(data["latitude"]?.toString() ?? "0") ?? 0;
-        gpsData["longitude"] =
-            double.tryParse(data["longitude"]?.toString() ?? "0") ?? 0;
-        gpsData["connected"] = true;
-        gpsData["error"] = "";
+        gpsData["latitude"] = double.tryParse(latitudeClean) ?? 0;
+        gpsData["longitude"] = double.tryParse(longitudeClean) ?? 0;
+
+        // Only mark as connected if we have non-zero coordinates
+        final hasValidCoordinates =
+            gpsData["latitude"] != 0 || gpsData["longitude"] != 0;
+
+        gpsData["connected"] = hasValidCoordinates;
+        gpsData["error"] = hasValidCoordinates
+            ? ""
+            : "GPS coordinates are (0,0). Waiting for valid data.";
       });
+
       print(
           "State updated with GPS location: {lat: ${gpsData["latitude"]}, lng: ${gpsData["longitude"]}}");
 
@@ -189,7 +205,7 @@ class _LocationPageState extends State<LocationPage> {
   }
 
   void _updateMapMarker() {
-    if (mapController != null) {
+    if (mapController != null && gpsData["connected"]) {
       // Move camera to the new position
       mapController!.animateCamera(
         CameraUpdate.newLatLng(
@@ -216,9 +232,9 @@ class _LocationPageState extends State<LocationPage> {
       decoration: const BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            Color(0xFFA8E063),
-            Color.fromARGB(255, 187, 221, 172)
-          ], // lime to green
+            const Color(0xFF68BB7D),
+            const Color(0xFFA8E063),
+          ],
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
         ),
@@ -227,7 +243,7 @@ class _LocationPageState extends State<LocationPage> {
         children: [
           // Title Box
           Padding(
-            padding: const EdgeInsets.only(top: 1.0),
+            padding: const EdgeInsets.only(top: 20.0),
             child: TitleBox(
               title: "Robot Location",
               icon: Icons.location_on,

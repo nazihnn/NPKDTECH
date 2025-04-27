@@ -1,5 +1,4 @@
 import 'title_box.dart';
-import 'dart:math' as math;
 import '../auth/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -116,53 +115,20 @@ class _HomePageState extends State<HomePage>
               const Color(0xFF68BB7D),
               const Color(0xFFA8E063),
             ],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
           ),
         ),
         child: SafeArea(
           child: Column(
             children: [
-              // Custom app bar with robot icon
               Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Row(
-                  children: [
-                    AnimatedBuilder(
-                      animation: _animationController,
-                      builder: (context, child) {
-                        return Transform.rotate(
-                          angle: _isLoading
-                              ? _animationController.value * 2 * math.pi
-                              : 0,
-                          child: const Icon(
-                            Icons.smart_toy,
-                            size: 40,
-                            color: Colors.white,
-                          ),
-                        );
-                      },
-                    ),
-                    const SizedBox(width: 12),
-                    const Text(
-                      "Robot  Monitor",
-                      style: TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                    const Spacer(),
-                    IconButton(
-                      onPressed: () {
-                        _fetchWeatherData();
-                      },
-                      icon: const Icon(Icons.refresh, color: Colors.white),
-                    ),
-                  ],
+                padding: const EdgeInsets.only(top: 0.0),
+                child: TitleBox(
+                  title: "Home",
+                  icon: Icons.home_filled,
                 ),
               ),
-
               // Status card
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),

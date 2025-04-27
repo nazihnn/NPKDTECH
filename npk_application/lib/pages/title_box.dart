@@ -14,29 +14,29 @@ class TitleBox extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 12),
+      padding: EdgeInsets.symmetric(horizontal: 0, vertical: 32),
       margin: const EdgeInsets.all(16), // Add margin for spacing
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Colors.transparent,
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(
-          color: Colors.deepOrange.shade600,
-          width: 3,
-        ),
+        // border: Border.all(
+        //   color: Colors.deepOrange.shade600,
+        //   width: 3,
+        // ),
       ),
       child: Row(
         children: [
           // Icon on the left, dynamically set the icon here
           Container(
             padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: Colors.deepOrange.shade600,
-              shape: BoxShape.circle,
-            ),
+            // decoration: BoxDecoration(
+            //   color: Colors.deepOrange.shade600,
+            //   shape: BoxShape.circle,
+            // ),
             child: Icon(
               icon, // Use the passed icon here
               color: Colors.white,
-              size: 28,
+              size: 40,
             ),
           ),
           const SizedBox(width: 12), // Spacing between icon and text
@@ -44,9 +44,9 @@ class TitleBox extends StatelessWidget {
           Text(
             title,
             style: const TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.w600,
-              color: Colors.black87,
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
             ),
           ),
         ],

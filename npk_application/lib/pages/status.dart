@@ -69,9 +69,9 @@ class _StatusPageState extends State<StatusPage> {
       decoration: const BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            Color(0xFFA8E063),
-            Color.fromARGB(255, 187, 221, 172)
-          ], // lime to green
+            const Color(0xFF68BB7D),
+            const Color(0xFFA8E063),
+          ],
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
         ),
@@ -80,7 +80,7 @@ class _StatusPageState extends State<StatusPage> {
         children: [
           // Title Box
           Padding(
-            padding: const EdgeInsets.only(top: 1.0),
+            padding: const EdgeInsets.only(top: 20.0),
             child: TitleBox(
               title: "Status",
               icon: Icons.info,

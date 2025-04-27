@@ -109,7 +109,10 @@ class _SensorPageState extends State<SensorPage> {
     return Container(
       decoration: const BoxDecoration(
         gradient: LinearGradient(
-          colors: [Color(0xFFA8E063), Color.fromARGB(255, 187, 221, 172)],
+          colors: [
+            const Color(0xFF68BB7D),
+            const Color(0xFFA8E063),
+          ],
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
         ),
@@ -118,7 +121,7 @@ class _SensorPageState extends State<SensorPage> {
         children: [
           // Title Box
           Padding(
-            padding: const EdgeInsets.only(top: 1.0),
+            padding: const EdgeInsets.only(top: 20.0),
             child: TitleBox(
               title: "Soil Data",
               icon: Icons.sensors,
