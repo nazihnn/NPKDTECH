@@ -80,7 +80,7 @@ class _StatusPageState extends State<StatusPage> {
         children: [
           // Title Box
           Padding(
-            padding: const EdgeInsets.only(top: 25.0),
+            padding: const EdgeInsets.only(top: 1.0),
             child: TitleBox(
               title: "Status",
               icon: Icons.info,
@@ -150,7 +150,7 @@ class _StatusPageState extends State<StatusPage> {
                         icon: Icon(Icons.arrow_upward),
                         label: Text("Up"),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.green,
+                          backgroundColor: Colors.deepOrange,
                           foregroundColor: Colors.white,
                           padding:
                               EdgeInsets.symmetric(horizontal: 5, vertical: 12),
@@ -171,7 +171,7 @@ class _StatusPageState extends State<StatusPage> {
                       ElevatedButton.icon(
                         onPressed:
                             isUpdating ? null : () => _controlActuator("stop"),
-                        icon: Icon(Icons.arrow_downward),
+                        icon: Icon(Icons.stop),
                         label: Text("stop"),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.red,
@@ -231,34 +231,34 @@ class _StatusPageState extends State<StatusPage> {
           ),
 
           // Control robot box - leaving this as is from your original code
-          Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
-            child: Container(
-              padding: const EdgeInsets.all(16.0),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                  color: Colors.deepOrange.shade600,
-                  width: 2,
-                ),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Text(
-                        "Control robot: ",
-                        style: TextStyle(fontSize: 18),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ),
+          // Padding(
+          //   padding:
+          //       const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
+          //   child: Container(
+          //     padding: const EdgeInsets.all(16.0),
+          //     decoration: BoxDecoration(
+          //       color: Colors.white,
+          //       borderRadius: BorderRadius.circular(12),
+          //       border: Border.all(
+          //         color: Colors.deepOrange.shade600,
+          //         width: 2,
+          //       ),
+          //     ),
+          //     child: Column(
+          //       crossAxisAlignment: CrossAxisAlignment.start,
+          //       children: [
+          //         Row(
+          //           children: [
+          //             Text(
+          //               "Control robot: ",
+          //               style: TextStyle(fontSize: 18),
+          //             ),
+          //           ],
+          //         ),
+          //       ],
+          //     ),
+          //   ),
+          // ),
         ],
       ),
     );

@@ -446,7 +446,7 @@ class _LocationPageState extends State<LocationPage> {
               });
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.green.shade600,
+              backgroundColor: Colors.deepOrange,
               foregroundColor: Colors.white,
             ),
             child: Text("Refresh UWB Data"),
@@ -596,7 +596,7 @@ class _LocationPageState extends State<LocationPage> {
               });
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.green.shade600,
+              backgroundColor: Colors.deepOrange,
               foregroundColor: Colors.white,
             ),
             child: Text("Refresh GPS Data"),

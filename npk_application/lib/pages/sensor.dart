@@ -44,7 +44,7 @@ class _SensorPageState extends State<SensorPage> {
 
   void _listenToDatabase() {
     print("Setting up database listener");
-    
+
     // First try to get the data once
     _databaseRef.get().then((DataSnapshot snapshot) {
       print("One-time data fetch result: ${snapshot.value}");
@@ -63,7 +63,7 @@ class _SensorPageState extends State<SensorPage> {
         connectionError = "Error: $error";
       });
     });
-    
+
     // Then set up ongoing listener
     _subscription = _databaseRef.onValue.listen(
       (DatabaseEvent event) {
@@ -79,7 +79,7 @@ class _SensorPageState extends State<SensorPage> {
       },
     );
   }
-  
+
   void _updateData(Map<dynamic, dynamic>? data) {
     if (data != null) {
       print("Processing data: $data");
@@ -109,10 +109,7 @@ class _SensorPageState extends State<SensorPage> {
     return Container(
       decoration: const BoxDecoration(
         gradient: LinearGradient(
-          colors: [
-            Color(0xFFA8E063),
-            Color.fromARGB(255, 187, 221, 172)
-          ],
+          colors: [Color(0xFFA8E063), Color.fromARGB(255, 187, 221, 172)],
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
         ),
@@ -121,13 +118,13 @@ class _SensorPageState extends State<SensorPage> {
         children: [
           // Title Box
           Padding(
-            padding: const EdgeInsets.only(top: 25.0),
+            padding: const EdgeInsets.only(top: 1.0),
             child: TitleBox(
               title: "Soil Data",
               icon: Icons.sensors,
             ),
           ),
-          
+
           // Connection status indicator
           if (!isConnected)
             Container(
@@ -144,8 +141,8 @@ class _SensorPageState extends State<SensorPage> {
                   SizedBox(width: 8),
                   Expanded(
                     child: Text(
-                      connectionError.isEmpty 
-                          ? "Not connected to database" 
+                      connectionError.isEmpty
+                          ? "Not connected to database"
                           : connectionError,
                       style: TextStyle(color: Colors.red.shade900),
                     ),
@@ -155,7 +152,7 @@ class _SensorPageState extends State<SensorPage> {
             ),
 
           const SizedBox(height: 16),
-          
+
           // Data boxes
           _buildDataBox("Nitrogen", npkData["nitrogen"] ?? "Loading..."),
           const SizedBox(height: 10),
@@ -164,7 +161,7 @@ class _SensorPageState extends State<SensorPage> {
           _buildDataBox("Potassium", npkData["potassium"] ?? "Loading..."),
           const SizedBox(height: 10),
           _buildDataBox("Moisture", npkData["moisture"] ?? "Loading..."),
-          
+
           // Debug button
           Padding(
             padding: const EdgeInsets.all(16.0),
@@ -178,6 +175,11 @@ class _SensorPageState extends State<SensorPage> {
                 });
               },
               child: Text("Debug: Refresh Data"),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.deepOrange,
+                foregroundColor: Colors.white,
+                padding: EdgeInsets.symmetric(horizontal: 5, vertical: 12),
+              ),
             ),
           ),
         ],
