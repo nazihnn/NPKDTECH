@@ -1,6 +1,7 @@
 import 'title_box.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class LocationPage extends StatefulWidget {
   const LocationPage({super.key});
@@ -10,12 +11,37 @@ class LocationPage extends StatefulWidget {
 }
 
 class _LocationPageState extends State<LocationPage> {
-  final DatabaseReference _databaseRef = FirebaseDatabase.instance.ref("UWB/");
-  Map<String, String> locationData = {"x": "Loading...", "y": "Loading..."};
-  bool isConnected = false;
-  String connectionError = "";
+  final DatabaseReference _uwbDatabaseRef =
+      FirebaseDatabase.instance.ref("UWB/");
+  final DatabaseReference _gpsDatabaseRef =
+      FirebaseDatabase.instance.ref("GPS/");
 
-  // Store parsed coordinates for the grid
+  // UWB data
+  Map<String, String> uwbData = {"x": "Loading...", "y": "Loading..."};
+  bool isUwbConnected = false;
+  String uwbConnectionError = "";
+
+  // GPS data
+  Map<String, dynamic> gpsData = {
+    "latitude": 37.422, // Default coordinate (Google HQ)
+    "longitude": -122.084, // Default coordinate (Google HQ)
+    "connected": false,
+    "error": ""
+  };
+
+  // Google Maps Controller
+  GoogleMapController? mapController;
+  Set<Marker> markers = {};
+
+  void _onMapCreated(GoogleMapController controller) {
+    mapController = controller;
+    _updateMapMarker();
+  }
+
+  // Toggle state
+  bool showGpsView = false;
+
+  // Store parsed coordinates for the UWB grid
   double xCoord = 0;
   double yCoord = 0;
 
@@ -28,53 +54,60 @@ class _LocationPageState extends State<LocationPage> {
   void initState() {
     super.initState();
     print("Initializing location page");
-    _listenToDatabase();
+    _listenToUwbDatabase();
+    _listenToGpsDatabase();
   }
 
-  void _listenToDatabase() {
-    print("Setting up location database listener");
+  @override
+  void dispose() {
+    mapController?.dispose();
+    super.dispose();
+  }
+
+  void _listenToUwbDatabase() {
+    print("Setting up UWB location database listener");
 
     // First try to get the data once
-    _databaseRef.get().then((DataSnapshot snapshot) {
-      print("One-time location data fetch result: ${snapshot.value}");
+    _uwbDatabaseRef.get().then((DataSnapshot snapshot) {
+      print("One-time UWB location data fetch result: ${snapshot.value}");
       if (snapshot.exists) {
         final data = snapshot.value as Map<dynamic, dynamic>?;
-        _updateData(data);
+        _updateUwbData(data);
       } else {
-        print("No location data available");
+        print("No UWB location data available");
         setState(() {
-          connectionError = "No data found at the specified path";
+          uwbConnectionError = "No data found at the specified path";
         });
       }
     }).catchError((error) {
-      print("Error fetching location data: $error");
+      print("Error fetching UWB location data: $error");
       setState(() {
-        connectionError = "Error: $error";
+        uwbConnectionError = "Error: $error";
       });
     });
 
     // Then set up ongoing listener
-    _databaseRef.onValue.listen(
+    _uwbDatabaseRef.onValue.listen(
       (DatabaseEvent event) {
-        print("Location database event received: ${event.snapshot.value}");
+        print("UWB location database event received: ${event.snapshot.value}");
         final data = event.snapshot.value as Map<dynamic, dynamic>?;
-        _updateData(data);
+        _updateUwbData(data);
       },
       onError: (error) {
-        print("Error listening to location database: $error");
+        print("Error listening to UWB location database: $error");
         setState(() {
-          connectionError = "Error: $error";
+          uwbConnectionError = "Error: $error";
         });
       },
     );
   }
 
-  void _updateData(Map<dynamic, dynamic>? data) {
+  void _updateUwbData(Map<dynamic, dynamic>? data) {
     if (data != null) {
-      print("Processing location data: $data");
+      print("Processing UWB location data: $data");
       setState(() {
         // Update text display values
-        locationData = {
+        uwbData = {
           "x": data["x"]?.toString() ?? "No data",
           "y": data["y"]?.toString() ?? "No data"
         };
@@ -83,12 +116,97 @@ class _LocationPageState extends State<LocationPage> {
         xCoord = double.tryParse(data["x"]?.toString() ?? "0") ?? 0;
         yCoord = double.tryParse(data["y"]?.toString() ?? "0") ?? 0;
 
-        isConnected = true;
-        connectionError = "";
+        isUwbConnected = true;
+        uwbConnectionError = "";
       });
-      print("State updated with location: {x: $xCoord, y: $yCoord}");
+      print("State updated with UWB location: {x: $xCoord, y: $yCoord}");
     } else {
-      print("Location data is null");
+      print("UWB location data is null");
+    }
+  }
+
+  void _listenToGpsDatabase() {
+    print("Setting up GPS location database listener");
+
+    // First try to get the data once
+    _gpsDatabaseRef.get().then((DataSnapshot snapshot) {
+      print("One-time GPS location data fetch result: ${snapshot.value}");
+      if (snapshot.exists) {
+        final data = snapshot.value as Map<dynamic, dynamic>?;
+        _updateGpsData(data);
+      } else {
+        print("No GPS location data available");
+        setState(() {
+          gpsData["connected"] = false;
+          gpsData["error"] = "No GPS data found at the specified path";
+        });
+      }
+    }).catchError((error) {
+      print("Error fetching GPS location data: $error");
+      setState(() {
+        gpsData["connected"] = false;
+        gpsData["error"] = "Error: $error";
+      });
+    });
+
+    // Then set up ongoing listener
+    _gpsDatabaseRef.onValue.listen(
+      (DatabaseEvent event) {
+        print("GPS location database event received: ${event.snapshot.value}");
+        final data = event.snapshot.value as Map<dynamic, dynamic>?;
+        _updateGpsData(data);
+      },
+      onError: (error) {
+        print("Error listening to GPS location database: $error");
+        setState(() {
+          gpsData["connected"] = false;
+          gpsData["error"] = "Error: $error";
+        });
+      },
+    );
+  }
+
+  void _updateGpsData(Map<dynamic, dynamic>? data) {
+    if (data != null) {
+      print("Processing GPS location data: $data");
+      setState(() {
+        // Parse latitude and longitude
+        gpsData["latitude"] =
+            double.tryParse(data["latitude"]?.toString() ?? "0") ?? 0;
+        gpsData["longitude"] =
+            double.tryParse(data["longitude"]?.toString() ?? "0") ?? 0;
+        gpsData["connected"] = true;
+        gpsData["error"] = "";
+      });
+      print(
+          "State updated with GPS location: {lat: ${gpsData["latitude"]}, lng: ${gpsData["longitude"]}}");
+
+      // Update map marker and camera position if map is initialized
+      _updateMapMarker();
+    } else {
+      print("GPS location data is null");
+    }
+  }
+
+  void _updateMapMarker() {
+    if (mapController != null) {
+      // Move camera to the new position
+      mapController!.animateCamera(
+        CameraUpdate.newLatLng(
+          LatLng(gpsData["latitude"], gpsData["longitude"]),
+        ),
+      );
+
+      // Update marker
+      setState(() {
+        markers = {
+          Marker(
+            markerId: const MarkerId('robotLocation'),
+            position: LatLng(gpsData["latitude"], gpsData["longitude"]),
+            infoWindow: const InfoWindow(title: 'Robot Location'),
+          ),
+        };
+      });
     }
   }
 
@@ -116,188 +234,375 @@ class _LocationPageState extends State<LocationPage> {
             ),
           ),
 
-          // Connection error indicator
-          if (!isConnected && connectionError.isNotEmpty)
-            Container(
-              margin: const EdgeInsets.all(8.0),
-              padding: const EdgeInsets.all(8.0),
-              decoration: BoxDecoration(
-                color: Colors.red.shade100,
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: Colors.red),
-              ),
-              child: Row(
-                children: [
-                  Icon(Icons.error_outline, color: Colors.red),
-                  SizedBox(width: 8),
-                  Expanded(
-                    child: Text(
-                      connectionError,
-                      style: TextStyle(color: Colors.red.shade900),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
-          // Coordinate Box (combined X and Y)
+          // Toggle Switch
           Padding(
             padding:
-                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 1.0),
+                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
             child: Container(
-              padding: const EdgeInsets.all(16.0),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
               decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(25),
                 border: Border.all(
                   color: Colors.deepOrange.shade600,
                   width: 2,
                 ),
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  Row(
-                    children: [
-                      Text(
-                        "X Coordinate: ",
-                        style: TextStyle(fontSize: 18),
-                      ),
-                      Text(
-                        locationData["x"] ?? "Loading...",
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
+                  // UWB Toggle
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          showGpsView = false;
+                        });
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 10.0),
+                        decoration: BoxDecoration(
+                          color: !showGpsView
+                              ? Colors.deepOrange.shade100
+                              : Colors.transparent,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Center(
+                          child: Text(
+                            "UWB",
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: !showGpsView
+                                  ? Colors.deepOrange.shade800
+                                  : Colors.grey.shade700,
+                            ),
+                          ),
                         ),
                       ),
-                    ],
+                    ),
                   ),
-                  SizedBox(height: 8), // Spacing between rows
-                  Row(
-                    children: [
-                      Text(
-                        "Y Coordinate: ",
-                        style: TextStyle(fontSize: 18),
-                      ),
-                      Text(
-                        locationData["y"] ?? "Loading...",
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
+
+                  // GPS Toggle
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          showGpsView = true;
+                        });
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 10.0),
+                        decoration: BoxDecoration(
+                          color: showGpsView
+                              ? Colors.deepOrange.shade100
+                              : Colors.transparent,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Center(
+                          child: Text(
+                            "GPS",
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: showGpsView
+                                  ? Colors.deepOrange.shade800
+                                  : Colors.grey.shade700,
+                            ),
+                          ),
                         ),
                       ),
-                    ],
+                    ),
                   ),
                 ],
               ),
             ),
           ),
 
-          // // Map Title Box
-          // Padding(
-          //   padding: const EdgeInsets.symmetric(vertical: 8.0),
-          //   child: Container(
-          //     padding: const EdgeInsets.all(16.0),
-          //     margin: const EdgeInsets.symmetric(horizontal: 16.0),
-          //     decoration: BoxDecoration(
-          //       color: Colors.white,
-          //       borderRadius: BorderRadius.circular(12),
-          //       border: Border.all(
-          //         color: Colors.deepOrange.shade600,
-          //         width: 2,
-          //       ),
-          //     ),
-          //     child: Text(
-          //       "Current Location",
-          //       style: TextStyle(
-          //         fontSize: 22,
-          //         fontWeight: FontWeight.w600,
-          //         color: Colors.black87,
-          //       ),
-          //     ),
-          //   ),
-          // ),
+          // Content based on selected view
+          Expanded(
+            child: showGpsView ? _buildGpsView() : _buildUwbView(),
+          ),
+        ],
+      ),
+    );
+  }
 
-          // Grid visualization
-          Padding(
+  Widget _buildUwbView() {
+    return Column(
+      children: [
+        // Connection error indicator
+        if (!isUwbConnected && uwbConnectionError.isNotEmpty)
+          Container(
+            margin: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(8.0),
+            decoration: BoxDecoration(
+              color: Colors.red.shade100,
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: Colors.red),
+            ),
+            child: Row(
+              children: [
+                Icon(Icons.error_outline, color: Colors.red),
+                SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    uwbConnectionError,
+                    style: TextStyle(color: Colors.red.shade900),
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+        // Coordinate Box (combined X and Y)
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 1.0),
+          child: Container(
+            padding: const EdgeInsets.all(16.0),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: Colors.deepOrange.shade600,
+                width: 2,
+              ),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Text(
+                      "X Coordinate: ",
+                      style: TextStyle(fontSize: 18),
+                    ),
+                    Text(
+                      uwbData["x"] ?? "Loading...",
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 8), // Spacing between rows
+                Row(
+                  children: [
+                    Text(
+                      "Y Coordinate: ",
+                      style: TextStyle(fontSize: 18),
+                    ),
+                    Text(
+                      uwbData["y"] ?? "Loading...",
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+
+        // Grid visualization
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Container(
+            width: gridSize,
+            height: gridSize,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              border: Border.all(color: Colors.grey.shade800, width: 2),
+              borderRadius: BorderRadius.circular(4),
+            ),
+            child: CustomPaint(
+              painter: GridPainter(
+                xCoord: xCoord,
+                yCoord: yCoord,
+                maxX: maxX,
+                maxY: maxY,
+              ),
+              size: Size(gridSize, gridSize),
+            ),
+          ),
+        ),
+
+        // Debug refresh button
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: ElevatedButton(
+            onPressed: () {
+              print("Manual UWB location refresh requested");
+              _uwbDatabaseRef.get().then((snapshot) {
+                print("Manual UWB location fetch result: ${snapshot.value}");
+                final data = snapshot.value as Map<dynamic, dynamic>?;
+                _updateUwbData(data);
+              }).catchError((error) {
+                print("Manual UWB location fetch error: $error");
+              });
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.green.shade600,
+              foregroundColor: Colors.white,
+            ),
+            child: Text("Refresh UWB Data"),
+          ),
+        ),
+
+        // Spacer to push content up and keep the button at the bottom
+        Expanded(child: Container()),
+      ],
+    );
+  }
+
+  Widget _buildGpsView() {
+    return Column(
+      children: [
+        // Connection error indicator
+        if (!gpsData["connected"] && gpsData["error"].isNotEmpty)
+          Container(
+            margin: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(8.0),
+            decoration: BoxDecoration(
+              color: Colors.red.shade100,
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: Colors.red),
+            ),
+            child: Row(
+              children: [
+                Icon(Icons.error_outline, color: Colors.red),
+                SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    gpsData["error"],
+                    style: TextStyle(color: Colors.red.shade900),
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+        // Coordinate Box (combined Lat and Long)
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 1.0),
+          child: Container(
+            padding: const EdgeInsets.all(16.0),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: Colors.deepOrange.shade600,
+                width: 2,
+              ),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Text(
+                      "Latitude: ",
+                      style: TextStyle(fontSize: 18),
+                    ),
+                    Text(
+                      gpsData["latitude"].toString(),
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 8), // Spacing between rows
+                Row(
+                  children: [
+                    Text(
+                      "Longitude: ",
+                      style: TextStyle(fontSize: 18),
+                    ),
+                    Text(
+                      gpsData["longitude"].toString(),
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+
+        // Map visualization
+        Expanded(
+          child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Container(
-              width: gridSize,
-              height: gridSize,
               decoration: BoxDecoration(
                 color: Colors.white,
                 border: Border.all(color: Colors.grey.shade800, width: 2),
                 borderRadius: BorderRadius.circular(4),
               ),
-              child: CustomPaint(
-                painter: GridPainter(
-                  xCoord: xCoord,
-                  yCoord: yCoord,
-                  maxX: maxX,
-                  maxY: maxY,
-                ),
-                size: Size(gridSize, gridSize),
-              ),
+              child: gpsData["connected"]
+                  ? GoogleMap(
+                      onMapCreated: _onMapCreated,
+                      initialCameraPosition: CameraPosition(
+                        target:
+                            LatLng(gpsData["latitude"], gpsData["longitude"]),
+                        zoom: 15.0,
+                      ),
+                      markers: markers,
+                      myLocationEnabled: false,
+                      myLocationButtonEnabled: false,
+                      zoomControlsEnabled: true,
+                      zoomGesturesEnabled: true,
+                      mapType: MapType.normal,
+                    )
+                  : Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.map_sharp, size: 48, color: Colors.grey),
+                          SizedBox(height: 16),
+                          Text(
+                            "GPS data not available",
+                            style: TextStyle(
+                                fontSize: 18, color: Colors.grey.shade700),
+                          ),
+                        ],
+                      ),
+                    ),
             ),
           ),
+        ),
 
-          // Grid labels
-          // Container(
-          //   width: gridSize,
-          //   padding: const EdgeInsets.only(top: 4),
-          //   child: Row(
-          //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          //     children: [
-          //       Text('0', style: TextStyle(fontSize: 12)),
-          //       Text('X: ${maxX.toInt()}', style: TextStyle(fontSize: 12)),
-          //     ],
-          //   ),
-          // ),
-
-          // Row(
-          //   mainAxisAlignment: MainAxisAlignment.center,
-          //   children: [
-          //     Container(
-          //       height: gridSize,
-          //       padding: const EdgeInsets.only(right: 4),
-          //       child: Column(
-          //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          //         children: [
-          //           Text('Y: ${maxY.toInt()}', style: TextStyle(fontSize: 12)),
-          //           // Text('0', style: TextStyle(fontSize: 12)),
-          //         ],
-          //       ),
-          //     ),
-          //     SizedBox(width: gridSize),
-          //   ],
-          // ),
-
-          // Debug refresh button
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: ElevatedButton(
-              onPressed: () {
-                print("Manual location refresh requested");
-                _databaseRef.get().then((snapshot) {
-                  print("Manual location fetch result: ${snapshot.value}");
-                  final data = snapshot.value as Map<dynamic, dynamic>?;
-                  _updateData(data);
-                }).catchError((error) {
-                  print("Manual location fetch error: $error");
-                });
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.green.shade600,
-                foregroundColor: Colors.white,
-              ),
-              child: Text("Refresh Location Data"),
+        // Debug refresh button
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+          child: ElevatedButton(
+            onPressed: () {
+              print("Manual GPS location refresh requested");
+              _gpsDatabaseRef.get().then((snapshot) {
+                print("Manual GPS location fetch result: ${snapshot.value}");
+                final data = snapshot.value as Map<dynamic, dynamic>?;
+                _updateGpsData(data);
+              }).catchError((error) {
+                print("Manual GPS location fetch error: $error");
+              });
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.green.shade600,
+              foregroundColor: Colors.white,
             ),
+            child: Text("Refresh GPS Data"),
           ),
-
-          // Spacer to push content up and keep the button at the bottom
-          Expanded(child: Container()),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
