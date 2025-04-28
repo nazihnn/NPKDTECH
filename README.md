@@ -2,10 +2,19 @@
 
 The application will serve as a platform extension for the NPKDTECH robot/system, which is designed for soil sampling and analyzing fertilizer levels by detecting nitrogen, phosphorus, and potassium. The app will display this data in real-time while also providing control features for the system.
 ## My App 
+
+### Dvelopment Process
 In order to develop the app, multiple revisions of the storyboard were made, which allowed me to get creative and understand what I am developing. 
 The following picture is of the first storyboard with pen and paper. 
 
-<img src="npk_application/images/Storyboardn_1.jpg" alt="drawing" width="200"/>
+<img src="npk_application/images/Storyboardn_1.jpg" alt="drawing" width="400"/>
+
+For more detail, I developed an additional round of storyboards that delve deeper into the user experience, bringing the application to life and making it more interactive. This process was invaluable during development, as it provided a clear vision of the goals I aimed to achieve.
+
+<img src="npk_application/images/story1.png" alt="drawing" width="400"/>
+<img src="npk_application/images/storyb.png" alt="drawing" width="400"/>
+
+After development, this is how the app looked with all the different interfaces and pages. Inspired by the initial storyboard. Making a simple inetface which is easy to use and proviodes the user with the data which they need straighaway without alot of clunk, which was the goal from the begining. 
 <div style="display: flex; flex-wrap: wrap; gap: 250px; justify-content: center;">
 
   <!-- Top row: 4 images -->
@@ -23,13 +32,42 @@ The following picture is of the first storyboard with pen and paper.
 
 </div>
 
+### Features
+
+- **Authentication & Privacy** 🔐  
+  User authentication and data privacy are handled securely using **Firebase Authentication**. This ensures that each user’s data is protected, providing a personalized and safe experience for every individual.
+
+- **Real-Time Data Viewing** 📊  
+  The application connects to **Firebase Realtime Database** to provide live updates on the system's data. This enables seamless tracking and monitoring of the soil sampling process, allowing users to view real-time information without delays.
+
+- **Location Tracking with Google Maps & UWB** 📍  
+  Users can view the robot's location on **Google Maps**, while **Ultra-Wideband (UWB)** technology is used to enhance accuracy for close-distance location tracking. This ensures precise navigation and real-time updates for the robot’s position, especially in confined spaces.
+
+- **Robot Actuator Control** 🤖  
+  The app provides users with the ability to remotely control the robot’s actuator, allowing for precise movement and operation during the soil sampling process. This feature ensures that users can guide the robot effectively to the desired location, enhancing the flexibility and functionality of the system.
+
+### Tools
+
+- **Firebase Authentication & Realtime Database** 🔐  
+  Firebase is used for user authentication and real-time data synchronization.
+
+- **Google Maps API** 🌍  
+  The Google Maps API is utilized for location tracking.
+
+- **ESP32 Nano** 💻  
+  The **ESP32 Nano** is the microcontroller that powers the robot and handles all the communication, data processing, and control operation.
+
+- **NPK, Temperature, and Humidity Sensors** 🌱🌡️💧  
+  These sensors are responsible for collecting soil data, as well as environmental factors such as temperature and humidity. This data is essential for analyzing soil health and fertilizer needs.
+
+- **GPS Module & UWB Probes** 🛰️  
+  The **GPS module** provides location tracking, while the UWB is more for accuracy and precision.
+
+- **Linear Actuator** ⚙️  
+  The **linear actuator** is used to control the sensors up and down
 
 ## Include A Section That Tells Developers How To Install The App
 
-The initial storyboard of the design looks like the following I was aiming for a simple design and not making the app to clunky while showing the important information in a way which stands out. This storyboard gave me a good idea of what I was trying to build throughout the length of the development. 
-
-The first two interfaces are a login and a signup page, which are used for authentication, allowing users to view their different pieces of data. Following that, there will be 4 pages. The first page shows general sensor data, such as the outside temperature on the robot, how quickly the robot is traveling, and the humidity. The following page will give some insights regarding the soil, it will show the NPK values along with the moisture of the soil. The third page will be used for location, we provide two ways for localizing the robot, one is using UWB, which provides precision, and the other is using GPS. The UWB interface will show a grid with regards to where the robot is. The GPS interface will useGoogle Maps API to show a pin at where the robot is currently. Finally, a status/control page which will show what the robot is currently doing, either sampling or travelling. It will also provide control over the linear actuator to move the robot up and down.  
-Include a section that gives intructions on how to install the app or run it in Flutter.  What versions of the plugins are you assuming?  Maybe define a licence
 
 ##  Contact Details
 
