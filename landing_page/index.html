@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NPKDTECH - Soil Analysis System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background-color: #2c7744;
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+        }
+        
+        .app-title {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+        
+        .app-description {
+            font-size: 18px;
+            max-width: 800px;
+            margin: 0 auto 20px;
+        }
+        
+        .section {
+            margin: 40px 0;
+            background-color: white;
+            border-radius: 8px;
+            padding: 25px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .section-title {
+            color: #2c7744;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+        
+        .page-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+        
+        .page-card {
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .page-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .page-info {
+            padding: 15px;
+        }
+        
+        .page-name {
+            font-size: 18px;
+            font-weight: bold;
+            color: #2c7744;
+            margin-bottom: 10px;
+        }
+        
+        .page-description {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .app-features {
+            margin: 20px 0;
+        }
+        
+        .feature {
+            margin-bottom: 15px;
+        }
+        
+        .feature-title {
+            font-weight: bold;
+            color: #2c7744;
+        }
+        
+        .robot-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 25px;
+            align-items: center;
+        }
+        
+        .robot-image {
+            flex: 1;
+            min-width: 300px;
+        }
+        
+        .robot-image img {
+            max-width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .robot-info {
+            flex: 1;
+            min-width: 300px;
+        }
+        
+        .circuit-images {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .circuit-images img {
+            max-width: 48%;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #2c7744;
+            color: white;
+            margin-top: 40px;
+        }
+        
+        @media (max-width: 768px) {
+            .page-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .circuit-images img {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1 class="app-title">NPKDTECH Mobile Application</h1>
+            <p class="app-description">
+                A platform extension for the NPKDTECH robot system designed for soil sampling and analyzing fertilizer levels by detecting nitrogen, phosphorus, and potassium in real-time.
+            </p>
+        </div>
+    </header>
+
+    <div class="container">
+        <section class="section">
+            <h2 class="section-title">App Overview</h2>
+            <p>
+                The NPKDTECH mobile application interfaces with our soil analysis robot to provide farmers and agricultural professionals with real-time soil data. Monitor nutrient levels, control the sampling robot, and make data-driven decisions to optimize crop yields and reduce fertilizer costs.
+            </p>
+            
+            <div class="app-features">
+                <div class="feature">
+                    <p class="feature-title">Real-time Soil Analysis:</p>
+                    <p>View nitrogen, phosphorus, and potassium levels in your soil samples as they're collected.</p>
+                </div>
+                <div class="feature">
+                    <p class="feature-title">Robot Control System:</p>
+                    <p>Remotely control the NPKDTECH robot to collect samples from specific field locations.</p>
+                </div>
+                <div class="feature">
+                    <p class="feature-title">GPS Field Mapping:</p>
+                    <p>Track sample locations with GPS coordinates to create detailed field fertility maps.</p>
+                </div>
+                <div class="feature">
+                    <p class="feature-title">Helping The Enviroment:</p>
+                    <p>Tracking NPK data can tackle the issue with overuse of fertelizer which pollutes water sources.</p>
+                </div>
+               
+            </div>
+        </section>
+
+        <section class="section">
+            <h2 class="section-title">Application Pages</h2>
+            <div class="page-grid">
+                <div class="page-card">
+                    <div style="height: 300px; display: flex; align-items: center; justify-content: center; background-color: #f8f8f8;">
+                        <img src="./images/login.png" alt="Login Screen" style="max-height: 280px; max-width: 100%; object-fit: contain;">
+                    </div>
+                    <div class="page-info">
+                        <h3 class="page-name">Login</h3>
+                        <p class="page-description">Secure access to your NPKDTECH account and soil data.</p>
+                    </div>
+                </div>
+                
+                <div class="page-card">
+                    <div style="height: 300px; display: flex; align-items: center; justify-content: center; background-color: #f8f8f8;">
+                        <img src="./images/signup.png" alt="Signup Screen" style="max-height: 280px; max-width: 100%; object-fit: contain;">
+                    </div>
+                    <div class="page-info">
+                        <h3 class="page-name">Signup</h3>
+                        <p class="page-description">Register for a new NPKDTECH account to get started with soil analysis.</p>
+                    </div>
+                </div>
+                
+                <div class="page-card">
+                    <div style="height: 300px; display: flex; align-items: center; justify-content: center; background-color: #f8f8f8;">
+                        <img src="./images/home.png" alt="Home Screen" style="max-height: 280px; max-width: 100%; object-fit: contain;">
+                    </div>
+                    <div class="page-info">
+                        <h3 class="page-name">Home Dashboard</h3>
+                        <p class="page-description">Overview of your soil data and quick access to all features.</p>
+                    </div>
+                </div>
+                
+                <div class="page-card">
+                    <div style="height: 300px; display: flex; align-items: center; justify-content: center; background-color: #f8f8f8;">
+                        <img src="./images/soildata.png" alt="Soil Data Screen" style="max-height: 280px; max-width: 100%; object-fit: contain;">
+                    </div>
+                    <div class="page-info">
+                        <h3 class="page-name">Soil Data</h3>
+                        <p class="page-description">Detailed view of soil nutrient levels .</p>
+                    </div>
+                </div>
+                
+                <div class="page-card">
+                    <div style="height: 300px; display: flex; align-items: center; justify-content: center; background-color: #f8f8f8;">
+                        <img src="./images/status.png" alt="Status Screen" style="max-height: 280px; max-width: 100%; object-fit: contain;">
+                    </div>
+                    <div class="page-info">
+                        <h3 class="page-name">Robot Status</h3>
+                        <p class="page-description">Monitor the current status and operation of your NPKDTECH robot.</p>
+                    </div>
+                </div>
+                
+                <div class="page-card">
+                    <div style="height: 300px; display: flex; align-items: center; justify-content: center; background-color: #f8f8f8;">
+                        <img src="./images/gps.png" alt="GPS Mapping Screen" style="max-height: 280px; max-width: 100%; object-fit: contain;">
+                    </div>
+                    <div class="page-info">
+                        <h3 class="page-name">GPS Field Mapping</h3>
+                        <p class="page-description">View soil sample locations and create detailed field maps.</p>
+                    </div>
+                </div>
+                
+                <div class="page-card">
+                    <div style="height: 300px; display: flex; align-items: center; justify-content: center; background-color: #f8f8f8;">
+                        <img src="./images/database.png" alt="Database Screen" style="max-height: 280px; max-width: 100%; object-fit: contain;">
+                    </div>
+                    <div class="page-info">
+                        <h3 class="page-name">Data Management</h3>
+                        <p class="page-description">Access your data in real-time.</p>
+                    </div>
+                </div>
+                
+                <div class="page-card">
+                    <div style="height: 300px; display: flex; align-items: center; justify-content: center; background-color: #f8f8f8;">
+                        <img src="./images/uwb.png" alt="UWB Screen" style="max-height: 280px; max-width: 100%; object-fit: contain;">
+                    </div>
+                    <div class="page-info">
+                        <h3 class="page-name">UWB Navigation</h3>
+                        <p class="page-description">Ultra-wideband positioning for precise robot navigation in fields.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2 class="section-title">The NPKDTECH Robot</h2>
+            <div class="robot-section">
+                <div class="robot-image">
+                    <img src="./images/robot.jpeg" alt="NPKDTECH Robot">
+                </div>
+                <div class="robot-info">
+                    <p>The NPKDTECH robot is designed specifically for precision agriculture, equipped with advanced sensors to detect nitrogen, phosphorus, and potassium levels in soil. It autonomously collects samples across your fields and transmits data in real-time to the mobile application.</p>
+                    <p style="margin-top: 15px;">Key features of the robot include:</p>
+                    <ul style="margin-left: 20px; margin-top: 10px;">
+                        <li>Automated soil sampling mechanism</li>
+                        <li>NPK nutrient detection sensors</li>
+                        <li>GPS and UWB positioning for precise navigation</li>
+                        <li>Wireless connectivity to the mobile application</li>
+                        <li>Weather-resistant design for field operations</li>
+                        <li>Rechargeable battery system</li>
+                    </ul>
+                    
+                    <h3 style="margin-top: 20px; color: #2c7744;">Circuit Design</h3>
+                    <div class="circuit-images">
+                        <img src="./images/circuit1.jpeg" alt="Circuit Design 1">
+                        <img src="./images/circuit2.jpeg" alt="Circuit Design 2">
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="section">
+            <h2 class="section-title">User Stories</h2>
+            <div style="display: flex; flex-wrap: wrap; gap: 20px;">
+                <div style="flex: 1; min-width: 300px;">
+                    <img src="./images/story1.png" alt="User Story 1" style="width: 100%; border-radius: 8px; margin-bottom: 15px;">
+                </div>
+                <div style="flex: 1; min-width: 300px;">
+                    <img src="./images/storyb.png" alt="User Story 2" style="width: 100%; border-radius: 8px; margin-bottom: 15px;">
+                </div>
+            </div>
+            <div style="margin-top: 20px;">
+                <img src="./images/Storyboardn_1.jpg" alt="Storyboard" style="width: 100%; border-radius: 8px;">
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 NPKDTECH. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>
