@@ -1,17 +1,12 @@
-# REPLACE WITH YOUR APP NAME
+# NPKD-TECH Mobile Application
 
-This is the Final assessment template for CASA0014 - Please use this template and edit the relevant sections to personalise.
-This section has a short introduction to what the application is
+The application will be a platform extension for the NPKDTECH robot/system which is used for soil sampling, specifically collecting data regarding the fertelizer is soil by detecting Nitrogen, phosphorus, and potassium. The app will work to present this data in real-time and add some control to the system. 
 
-## Use this README File 
+## My App 
 
-Use this section to show us what your Mobile App is about.   Include a Screenshot to the App, link to the various frameworks you've used. Include your presentation video here that shows off your Mobile App.   Emojis are also fun to include 📱 😄
+The initial storyboard of the design looks like the following I was aiming for a simple design and not making the app to clunky while showing the important information in a way which stands out. This storyboard gave me a good idea of what I was trying to build throughout the length of the development. 
 
-Look at some other Flutter Apps online and see how they use there README File.  Good examples are:
-
-- https://github.com/miickel/flutter_particle_clock
-- https://github.com/Tarikul711/flutter-food-delivery-app-ui    
-- https://github.com/mohak1283/Instagram-Clone
+The first two interfaces are a login and a signup page, which are used for authentication, allowing users to view their different pieces of data. Following that, there will be 4 pages. The first page shows general sensor data, such as the outside temperature on the robot, how quickly the robot is traveling, and the humidity. The following page will give some insights regarding the soil, it will show the NPK values along with the moisture of the soil. The third page will be used for location, we provide two ways for localizing the robot, one is using UWB, which provides precision, and the other is using GPS. The UWB interface will show a grid with regards to where the robot is. The GPS interface will useGoogle Maps API to show a pin at where the robot is currently. Finally, a status/control page which will show what the robot is currently doing, either sampling or travelling. It will also provide control over the linear actuator to move the robot up and down.  
 
 
 ## Include A Section That Tells Developers How To Install The App
