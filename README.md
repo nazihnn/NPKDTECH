@@ -65,6 +65,10 @@ After development, this is how the app looked with all the different interfaces 
 
 - **Linear Actuator** ⚙️  
   The **linear actuator** is used to control the sensors up and down
+### The Database
+<img src="npk_application/images/database.png" alt="drawing" width="400"/>
+
+
 ### Sensor system 
 
 <div style="display: flex; flex-wrap: wrap; gap: 250px; justify-content: center;">
