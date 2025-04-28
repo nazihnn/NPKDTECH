@@ -1,3 +1,5 @@
+
+
 # NPKD-TECH Mobile Application
 
 The application will serve as a platform extension for the NPKDTECH robot/system, which is designed for soil sampling and analyzing fertilizer levels by detecting nitrogen, phosphorus, and potassium. The app will display this data in real-time while also providing control features for the system.
@@ -76,6 +78,10 @@ After development, this is how the app looked with all the different interfaces 
 
   <img src="./npk_application/images/circuit1.jpeg" alt="circuit1" style="width: 350px; height: auto;">
   <img src="./npk_application/images/circuit2.jpeg" alt="circuit2" style="width: 350px; height: auto;">
+
+  ### The Robot 
+
+<img src="npk_application/images/robot.jpeg" alt="robot" width="200"/>
 
 ## Include A Section That Tells Developers How To Install The App
 
