@@ -122,74 +122,64 @@ class _HomePageState extends State<HomePage>
         child: SafeArea(
           child: Column(
             children: [
+              // Padding(
+              //   padding: const EdgeInsets.only(top: 0.0),
+              //   child: TitleBox(
+              //     title: "Home",
+              //     icon: Icons.home_filled,
+              //   ),
+              // ),
               Padding(
-                padding: const EdgeInsets.only(top: 0.0),
-                child: TitleBox(
-                  title: "Home",
-                  icon: Icons.home_filled,
-                ),
-              ),
-              // Status card
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: Container(
-                  padding: const EdgeInsets.all(16.0),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.2),
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(
-                      color: Colors.deepOrange.shade600,
-                      width: 4,
-                    ),
-                  ),
-                  child: Row(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: Colors.green,
-                          shape: BoxShape.circle,
-                        ),
-                        child: const Icon(
-                          Icons.check_circle_outline,
-                          color: Colors.white,
-                          size: 30,
-                        ),
-                      ),
-                      const SizedBox(width: 16),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            "System Status",
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: Colors.white,
-                            ),
-                          ),
-                          Text(
-                            _isLoading
-                                ? "Updating data..."
-                                : "All systems operational",
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
+                padding: const EdgeInsets.only(top: 16.0, bottom: 8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(12.0),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(50),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black26,
+                            blurRadius: 10,
+                            offset: Offset(0, 4),
                           ),
                         ],
                       ),
-                    ],
-                  ),
+                      child: Icon(
+                        Icons.home,
+                        color: Colors.orange.shade700,
+                        size: 28,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Text(
+                      "Home",
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                        shadows: [
+                          Shadow(
+                            color: Colors.black38,
+                            blurRadius: 2,
+                            offset: Offset(1, 1),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ),
 
-              const SizedBox(height: 24.0),
+              const SizedBox(height: 40.0),
 
               // Data cards
               Expanded(
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 16.0, vertical: 30.0),
                   child: GridView.builder(
                     itemCount: _combinedData.length,
                     gridDelegate:
@@ -197,7 +187,7 @@ class _HomePageState extends State<HomePage>
                       crossAxisCount: 2,
                       crossAxisSpacing: 16.0,
                       mainAxisSpacing: 16.0,
-                      childAspectRatio: 0.85,
+                      // childAspectRatio: 0.85,
                     ),
                     itemBuilder: (context, index) {
                       final data = _combinedData[index];
@@ -213,9 +203,11 @@ class _HomePageState extends State<HomePage>
                 ),
               ),
 
-              // Sign Out Button
+              // // Sign Out Button
+
               Padding(
-                padding: const EdgeInsets.only(bottom: 24.0, top: 8.0),
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 16.0, vertical: 16.0),
                 child: ElevatedButton.icon(
                   onPressed: () async {
                     await FirebaseAuth.instance.signOut();
@@ -225,19 +217,21 @@ class _HomePageState extends State<HomePage>
                           builder: (context) => const LoginPage()),
                     );
                   },
-                  icon: const Icon(Icons.logout),
-                  label: const Text("Sign Out"),
+                  icon: Icon(Icons.logout),
+                  label: Text("Sign Out"),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.deepOrange,
+                    backgroundColor: Colors.orange.shade600,
                     foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 32, vertical: 16),
+                    padding: EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30),
                     ),
+                    elevation: 4,
+                    minimumSize:
+                        Size(double.infinity, 0), // Makes button full width
                   ),
                 ),
-              ),
+              )
             ],
           ),
         ),
@@ -253,7 +247,7 @@ class _HomePageState extends State<HomePage>
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: Colors.deepOrange.shade600,
+          color: Colors.white,
           width: 2,
         ),
         boxShadow: [

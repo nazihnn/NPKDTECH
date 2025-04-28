@@ -13,7 +13,6 @@ class LocationPage extends StatefulWidget {
 class _LocationPageState extends State<LocationPage> {
   final DatabaseReference _uwbDatabaseRef =
       FirebaseDatabase.instance.ref("UWB/");
-  // Updated to use the Outside node for GPS data
   final DatabaseReference _gpsDatabaseRef =
       FirebaseDatabase.instance.ref("Outside/");
 
@@ -24,8 +23,8 @@ class _LocationPageState extends State<LocationPage> {
 
   // GPS data
   Map<String, dynamic> gpsData = {
-    "latitude": 0.0, // Default coordinate
-    "longitude": 0.0, // Default coordinate
+    "latitude": 0.0,
+    "longitude": 0.0,
     "connected": false,
     "error": ""
   };
@@ -48,8 +47,8 @@ class _LocationPageState extends State<LocationPage> {
 
   // Define grid size and scale factors
   final double gridSize = 250;
-  final double maxX = 150; // Adjust based on max expected value
-  final double maxY = 150; // Adjust based on max expected value
+  final double maxX = 150;
+  final double maxY = 150;
 
   @override
   void initState() {
@@ -232,390 +231,523 @@ class _LocationPageState extends State<LocationPage> {
       decoration: const BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            const Color(0xFF68BB7D),
-            const Color(0xFFA8E063),
+            Color(0xFF68BB7D),
+            Color(0xFFA8E063),
           ],
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
         ),
       ),
-      child: Column(
-        children: [
-          // Title Box
-          Padding(
-            padding: const EdgeInsets.only(top: 20.0),
-            child: TitleBox(
-              title: "Robot Location",
-              icon: Icons.location_on,
-            ),
-          ),
-
-          // Toggle Switch
-          Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-            child: Container(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(25),
-                border: Border.all(
-                  color: Colors.deepOrange.shade600,
-                  width: 2,
-                ),
-              ),
+      child: SafeArea(
+        child: Column(
+          children: [
+            // Header with title and icon
+            Padding(
+              padding: const EdgeInsets.only(top: 16.0, bottom: 8.0),
               child: Row(
-                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  // UWB Toggle
-                  Expanded(
-                    child: GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          showGpsView = false;
-                        });
-                      },
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(vertical: 10.0),
-                        decoration: BoxDecoration(
-                          color: !showGpsView
-                              ? Colors.deepOrange.shade100
-                              : Colors.transparent,
-                          borderRadius: BorderRadius.circular(20),
+                  Container(
+                    padding: const EdgeInsets.all(12.0),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(50),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black26,
+                          blurRadius: 10,
+                          offset: Offset(0, 4),
                         ),
-                        child: Center(
-                          child: Text(
-                            "UWB",
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: !showGpsView
-                                  ? Colors.deepOrange.shade800
-                                  : Colors.grey.shade700,
-                            ),
-                          ),
-                        ),
-                      ),
+                      ],
+                    ),
+                    child: Icon(
+                      Icons.location_on,
+                      color: Colors.orange.shade700,
+                      size: 28,
                     ),
                   ),
-
-                  // GPS Toggle
-                  Expanded(
-                    child: GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          showGpsView = true;
-                        });
-                      },
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(vertical: 10.0),
-                        decoration: BoxDecoration(
-                          color: showGpsView
-                              ? Colors.deepOrange.shade100
-                              : Colors.transparent,
-                          borderRadius: BorderRadius.circular(20),
+                  const SizedBox(width: 12),
+                  Text(
+                    "Robot Location",
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                      shadows: [
+                        Shadow(
+                          color: Colors.black38,
+                          blurRadius: 2,
+                          offset: Offset(1, 1),
                         ),
-                        child: Center(
-                          child: Text(
-                            "GPS",
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: showGpsView
-                                  ? Colors.deepOrange.shade800
-                                  : Colors.grey.shade700,
-                            ),
-                          ),
-                        ),
-                      ),
+                      ],
                     ),
                   ),
                 ],
               ),
             ),
+
+            // Toggle Switch
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+              child: Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 6.0, vertical: 6.0),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.15),
+                  borderRadius: BorderRadius.circular(30),
+                  border: Border.all(
+                    color: Colors.white24,
+                    width: 1,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black12,
+                      blurRadius: 8,
+                      offset: Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // UWB Toggle
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            showGpsView = false;
+                          });
+                        },
+                        child: AnimatedContainer(
+                          duration: Duration(milliseconds: 250),
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 12.0, horizontal: 8.0),
+                          decoration: BoxDecoration(
+                            color: !showGpsView
+                                ? Colors.orange.shade600
+                                : Colors.transparent,
+                            borderRadius: BorderRadius.circular(24),
+                          ),
+                          child: Center(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.share_location,
+                                  color: !showGpsView
+                                      ? Colors.white
+                                      : Colors.white70,
+                                  size: 18,
+                                ),
+                                SizedBox(width: 6),
+                                Text(
+                                  "UWB",
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: !showGpsView
+                                        ? FontWeight.bold
+                                        : FontWeight.normal,
+                                    color: !showGpsView
+                                        ? Colors.white
+                                        : Colors.white70,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+
+                    // GPS Toggle
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            showGpsView = true;
+                          });
+                        },
+                        child: AnimatedContainer(
+                          duration: Duration(milliseconds: 250),
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 12.0, horizontal: 8.0),
+                          decoration: BoxDecoration(
+                            color: showGpsView
+                                ? Colors.orange.shade600
+                                : Colors.transparent,
+                            borderRadius: BorderRadius.circular(24),
+                          ),
+                          child: Center(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.map,
+                                  color: showGpsView
+                                      ? Colors.white
+                                      : Colors.white70,
+                                  size: 18,
+                                ),
+                                SizedBox(width: 6),
+                                Text(
+                                  "GPS",
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: showGpsView
+                                        ? FontWeight.bold
+                                        : FontWeight.normal,
+                                    color: showGpsView
+                                        ? Colors.white
+                                        : Colors.white70,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
+            // Content based on selected view
+            Expanded(
+              child: showGpsView ? _buildGpsView() : _buildUwbView(),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildUwbView() {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        children: [
+          // Connection error indicator
+          if (!isUwbConnected && uwbConnectionError.isNotEmpty)
+            Container(
+              margin: const EdgeInsets.only(bottom: 16.0),
+              padding: const EdgeInsets.all(12.0),
+              decoration: BoxDecoration(
+                color: Colors.red.shade50,
+                borderRadius: BorderRadius.circular(12),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.red.withOpacity(0.2),
+                    blurRadius: 8,
+                    offset: Offset(0, 3),
+                  ),
+                ],
+              ),
+              child: Row(
+                children: [
+                  Icon(Icons.error_outline, color: Colors.red.shade700),
+                  SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      uwbConnectionError,
+                      style: TextStyle(color: Colors.red.shade800),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+          // Coordinate Card
+          Container(
+            margin: const EdgeInsets.only(bottom: 24.0),
+            padding: const EdgeInsets.all(20.0),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.1),
+                  blurRadius: 15,
+                  offset: Offset(0, 5),
+                ),
+              ],
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "UWB Coordinates",
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blueGrey.shade800,
+                  ),
+                ),
+                Divider(height: 24, thickness: 1, color: Colors.grey.shade200),
+                _buildCoordinateRow("X", uwbData["x"] ?? "Loading..."),
+                SizedBox(height: 12),
+                _buildCoordinateRow("Y", uwbData["y"] ?? "Loading..."),
+              ],
+            ),
           ),
 
-          // Content based on selected view
+          // Grid visualization
           Expanded(
-            child: showGpsView ? _buildGpsView() : _buildUwbView(),
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 15,
+                    offset: Offset(0, 5),
+                  ),
+                ],
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(16),
+                child: CustomPaint(
+                  painter: EnhancedGridPainter(
+                    xCoord: xCoord,
+                    yCoord: yCoord,
+                    maxX: maxX,
+                    maxY: maxY,
+                  ),
+                  size: Size(gridSize, gridSize),
+                ),
+              ),
+            ),
+          ),
+
+          // Refresh button
+          Container(
+            margin: const EdgeInsets.only(top: 24.0),
+            width: double.infinity,
+            child: ElevatedButton.icon(
+              onPressed: () {
+                print("Manual UWB location refresh requested");
+                _uwbDatabaseRef.get().then((snapshot) {
+                  print("Manual UWB location fetch result: ${snapshot.value}");
+                  final data = snapshot.value as Map<dynamic, dynamic>?;
+                  _updateUwbData(data);
+                }).catchError((error) {
+                  print("Manual UWB location fetch error: $error");
+                });
+              },
+              icon: Icon(Icons.refresh),
+              label: Text("Refresh UWB Data"),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.orange.shade600,
+                foregroundColor: Colors.white,
+                padding: EdgeInsets.symmetric(vertical: 16),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30),
+                ),
+                elevation: 4,
+              ),
+            ),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildUwbView() {
-    return Column(
-      children: [
-        // Connection error indicator
-        if (!isUwbConnected && uwbConnectionError.isNotEmpty)
-          Container(
-            margin: const EdgeInsets.all(8.0),
-            padding: const EdgeInsets.all(8.0),
-            decoration: BoxDecoration(
-              color: Colors.red.shade100,
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: Colors.red),
-            ),
-            child: Row(
-              children: [
-                Icon(Icons.error_outline, color: Colors.red),
-                SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    uwbConnectionError,
-                    style: TextStyle(color: Colors.red.shade900),
+  Widget _buildGpsView() {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        children: [
+          // Connection error indicator
+          if (!gpsData["connected"] && gpsData["error"].isNotEmpty)
+            Container(
+              margin: const EdgeInsets.only(bottom: 16.0),
+              padding: const EdgeInsets.all(12.0),
+              decoration: BoxDecoration(
+                color: Colors.red.shade50,
+                borderRadius: BorderRadius.circular(12),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.red.withOpacity(0.2),
+                    blurRadius: 8,
+                    offset: Offset(0, 3),
                   ),
-                ),
-              ],
+                ],
+              ),
+              child: Row(
+                children: [
+                  Icon(Icons.error_outline, color: Colors.red.shade700),
+                  SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      gpsData["error"],
+                      style: TextStyle(color: Colors.red.shade800),
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
 
-        // Coordinate Box (combined X and Y)
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 1.0),
-          child: Container(
-            padding: const EdgeInsets.all(16.0),
+          // Coordinate Card
+          Container(
+            margin: const EdgeInsets.only(bottom: 24.0),
+            padding: const EdgeInsets.all(20.0),
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: Colors.deepOrange.shade600,
-                width: 2,
-              ),
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.1),
+                  blurRadius: 15,
+                  offset: Offset(0, 5),
+                ),
+              ],
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  children: [
-                    Text(
-                      "X Coordinate: ",
-                      style: TextStyle(fontSize: 18),
-                    ),
-                    Text(
-                      uwbData["x"] ?? "Loading...",
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
+                Text(
+                  "GPS Coordinates",
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blueGrey.shade800,
+                  ),
                 ),
-                SizedBox(height: 8), // Spacing between rows
-                Row(
-                  children: [
-                    Text(
-                      "Y Coordinate: ",
-                      style: TextStyle(fontSize: 18),
-                    ),
-                    Text(
-                      uwbData["y"] ?? "Loading...",
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
+                Divider(height: 24, thickness: 1, color: Colors.grey.shade200),
+                _buildCoordinateRow("Latitude", gpsData["latitude"].toString()),
+                SizedBox(height: 12),
+                _buildCoordinateRow(
+                    "Longitude", gpsData["longitude"].toString()),
               ],
             ),
           ),
-        ),
 
-        // Grid visualization
-        Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Container(
-            width: gridSize,
-            height: gridSize,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              border: Border.all(color: Colors.grey.shade800, width: 2),
-              borderRadius: BorderRadius.circular(4),
-            ),
-            child: CustomPaint(
-              painter: GridPainter(
-                xCoord: xCoord,
-                yCoord: yCoord,
-                maxX: maxX,
-                maxY: maxY,
+          // Map visualization
+          Expanded(
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 15,
+                    offset: Offset(0, 5),
+                  ),
+                ],
               ),
-              size: Size(gridSize, gridSize),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(16),
+                child: gpsData["connected"]
+                    ? GoogleMap(
+                        onMapCreated: _onMapCreated,
+                        initialCameraPosition: CameraPosition(
+                          target:
+                              LatLng(gpsData["latitude"], gpsData["longitude"]),
+                          zoom: 15.0,
+                        ),
+                        markers: markers,
+                        myLocationEnabled: false,
+                        myLocationButtonEnabled: false,
+                        zoomControlsEnabled: true,
+                        zoomGesturesEnabled: true,
+                        mapType: MapType.normal,
+                      )
+                    : Container(
+                        color: Colors.grey.shade100,
+                        child: Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.map_outlined,
+                                size: 64,
+                                color: Colors.grey.shade400,
+                              ),
+                              SizedBox(height: 16),
+                              Text(
+                                "GPS data not available",
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  color: Colors.grey.shade600,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              SizedBox(height: 8),
+                              Text(
+                                "Waiting for location data...",
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.grey.shade500,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+              ),
             ),
           ),
-        ),
 
-        // Debug refresh button
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: ElevatedButton(
-            onPressed: () {
-              print("Manual UWB location refresh requested");
-              _uwbDatabaseRef.get().then((snapshot) {
-                print("Manual UWB location fetch result: ${snapshot.value}");
-                final data = snapshot.value as Map<dynamic, dynamic>?;
-                _updateUwbData(data);
-              }).catchError((error) {
-                print("Manual UWB location fetch error: $error");
-              });
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.deepOrange,
-              foregroundColor: Colors.white,
+          // Refresh button
+          Container(
+            margin: const EdgeInsets.only(top: 24.0),
+            width: double.infinity,
+            child: ElevatedButton.icon(
+              onPressed: () {
+                print("Manual GPS location refresh requested");
+                _gpsDatabaseRef.get().then((snapshot) {
+                  print("Manual GPS location fetch result: ${snapshot.value}");
+                  final data = snapshot.value as Map<dynamic, dynamic>?;
+                  _updateGpsData(data);
+                }).catchError((error) {
+                  print("Manual GPS location fetch error: $error");
+                });
+              },
+              icon: Icon(Icons.refresh),
+              label: Text("Refresh GPS Data"),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.orange.shade600,
+                foregroundColor: Colors.white,
+                padding: EdgeInsets.symmetric(vertical: 16),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30),
+                ),
+                elevation: 4,
+              ),
             ),
-            child: Text("Refresh UWB Data"),
           ),
-        ),
-
-        // Spacer to push content up and keep the button at the bottom
-        Expanded(child: Container()),
-      ],
+        ],
+      ),
     );
   }
 
-  Widget _buildGpsView() {
-    return Column(
+  Widget _buildCoordinateRow(String label, String value) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        // Connection error indicator
-        if (!gpsData["connected"] && gpsData["error"].isNotEmpty)
-          Container(
-            margin: const EdgeInsets.all(8.0),
-            padding: const EdgeInsets.all(8.0),
-            decoration: BoxDecoration(
-              color: Colors.red.shade100,
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: Colors.red),
-            ),
-            child: Row(
-              children: [
-                Icon(Icons.error_outline, color: Colors.red),
-                SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    gpsData["error"],
-                    style: TextStyle(color: Colors.red.shade900),
-                  ),
-                ),
-              ],
-            ),
-          ),
-
-        // Coordinate Box (combined Lat and Long)
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 1.0),
-          child: Container(
-            padding: const EdgeInsets.all(16.0),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: Colors.deepOrange.shade600,
-                width: 2,
-              ),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Text(
-                      "Latitude: ",
-                      style: TextStyle(fontSize: 18),
-                    ),
-                    Text(
-                      gpsData["latitude"].toString(),
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 8), // Spacing between rows
-                Row(
-                  children: [
-                    Text(
-                      "Longitude: ",
-                      style: TextStyle(fontSize: 18),
-                    ),
-                    Text(
-                      gpsData["longitude"].toString(),
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
+        Text(
+          "$label:",
+          style: TextStyle(
+            fontSize: 16,
+            color: Colors.blueGrey.shade600,
           ),
         ),
-
-        // Map visualization
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                border: Border.all(color: Colors.grey.shade800, width: 2),
-                borderRadius: BorderRadius.circular(4),
-              ),
-              child: gpsData["connected"]
-                  ? GoogleMap(
-                      onMapCreated: _onMapCreated,
-                      initialCameraPosition: CameraPosition(
-                        target:
-                            LatLng(gpsData["latitude"], gpsData["longitude"]),
-                        zoom: 15.0,
-                      ),
-                      markers: markers,
-                      myLocationEnabled: false,
-                      myLocationButtonEnabled: false,
-                      zoomControlsEnabled: true,
-                      zoomGesturesEnabled: true,
-                      mapType: MapType.normal,
-                    )
-                  : Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.map_sharp, size: 48, color: Colors.grey),
-                          SizedBox(height: 16),
-                          Text(
-                            "GPS data not available",
-                            style: TextStyle(
-                                fontSize: 18, color: Colors.grey.shade700),
-                          ),
-                        ],
-                      ),
-                    ),
-            ),
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          decoration: BoxDecoration(
+            color: Colors.grey.shade100,
+            borderRadius: BorderRadius.circular(8),
           ),
-        ),
-
-        // Debug refresh button
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
-          child: ElevatedButton(
-            onPressed: () {
-              print("Manual GPS location refresh requested");
-              _gpsDatabaseRef.get().then((snapshot) {
-                print("Manual GPS location fetch result: ${snapshot.value}");
-                final data = snapshot.value as Map<dynamic, dynamic>?;
-                _updateGpsData(data);
-              }).catchError((error) {
-                print("Manual GPS location fetch error: $error");
-              });
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.deepOrange,
-              foregroundColor: Colors.white,
+          child: Text(
+            value,
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              fontFamily: 'Roboto Mono',
+              color: Colors.blueGrey.shade800,
             ),
-            child: Text("Refresh GPS Data"),
           ),
         ),
       ],
@@ -623,14 +755,14 @@ class _LocationPageState extends State<LocationPage> {
   }
 }
 
-// Custom painter for drawing the grid and position marker
-class GridPainter extends CustomPainter {
+// Enhanced custom painter for drawing the grid and position marker
+class EnhancedGridPainter extends CustomPainter {
   final double xCoord;
   final double yCoord;
   final double maxX;
   final double maxY;
 
-  GridPainter({
+  EnhancedGridPainter({
     required this.xCoord,
     required this.yCoord,
     required this.maxX,
@@ -639,24 +771,48 @@ class GridPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
+    // Fill background
+    final bgPaint = Paint()..color = Colors.grey.shade50;
+    canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), bgPaint);
+
+    // Draw border
+    final borderPaint = Paint()
+      ..color = Colors.blueGrey.shade200
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2.0;
+    canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), borderPaint);
+
     final double cellWidth = size.width / 10;
     final double cellHeight = size.height / 10;
 
     // Draw grid lines
     final gridPaint = Paint()
-      ..color = Colors.grey.shade300
-      ..strokeWidth = 1;
+      ..color = Colors.blueGrey.shade100
+      ..strokeWidth = 0.8;
+
+    // Draw axes with darker color
+    final axesPaint = Paint()
+      ..color = Colors.blueGrey.shade300
+      ..strokeWidth = 1.5;
 
     // Draw horizontal grid lines
     for (int i = 0; i <= 10; i++) {
       double y = i * cellHeight;
-      canvas.drawLine(Offset(0, y), Offset(size.width, y), gridPaint);
+      canvas.drawLine(
+        Offset(0, y),
+        Offset(size.width, y),
+        i == 5 ? axesPaint : gridPaint,
+      );
     }
 
     // Draw vertical grid lines
     for (int i = 0; i <= 10; i++) {
       double x = i * cellWidth;
-      canvas.drawLine(Offset(x, 0), Offset(x, size.height), gridPaint);
+      canvas.drawLine(
+        Offset(x, 0),
+        Offset(x, size.height),
+        i == 5 ? axesPaint : gridPaint,
+      );
     }
 
     // Calculate robot position on grid
@@ -664,20 +820,73 @@ class GridPainter extends CustomPainter {
     // Invert Y coordinate because screen coordinates increase downward
     final double yPos = size.height - (yCoord / maxY) * size.height;
 
+    // Draw position marker with drop shadow
+    final shadowPaint = Paint()
+      ..color = Colors.black26
+      ..maskFilter = MaskFilter.blur(BlurStyle.normal, 4);
+    canvas.drawCircle(Offset(xPos, yPos + 2), 12, shadowPaint);
+
+    // Draw outer glow
+    final glowPaint = Paint()
+      ..color = Colors.orange.shade200.withOpacity(0.6)
+      ..style = PaintingStyle.fill;
+    canvas.drawCircle(Offset(xPos, yPos), 16, glowPaint);
+
     // Draw position marker (robot location)
     final markerPaint = Paint()
-      ..color = Colors.red
+      ..color = Colors.orange.shade600
       ..style = PaintingStyle.fill;
+    canvas.drawCircle(Offset(xPos, yPos), 10, markerPaint);
 
-    canvas.drawCircle(Offset(xPos, yPos), 8, markerPaint);
+    // Draw inner circle
+    final innerCirclePaint = Paint()
+      ..color = Colors.white
+      ..style = PaintingStyle.fill;
+    canvas.drawCircle(Offset(xPos, yPos), 4, innerCirclePaint);
 
-    // Draw border ring around marker
-    final markerBorderPaint = Paint()
-      ..color = Colors.black
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.5;
+    // Add coordinate labels at edges
+    final textStyle = TextStyle(
+      color: Colors.blueGrey.shade700,
+      fontSize: 10,
+    );
+    final textSpan = TextSpan(
+      text: '0',
+      style: textStyle,
+    );
+    final textPainter = TextPainter(
+      text: textSpan,
+      textDirection: TextDirection.ltr,
+    );
+    textPainter.layout();
 
-    canvas.drawCircle(Offset(xPos, yPos), 8, markerBorderPaint);
+    // Draw X-axis labels
+    for (int i = 0; i <= 10; i++) {
+      if (i % 2 == 0) {
+        final value = (i * maxX / 10).toInt().toString();
+        final textSpan = TextSpan(text: value, style: textStyle);
+        textPainter.text = textSpan;
+        textPainter.layout();
+        textPainter.paint(
+          canvas,
+          Offset(i * cellWidth - textPainter.width / 2, size.height + 4),
+        );
+      }
+    }
+
+    // Draw Y-axis labels
+    for (int i = 0; i <= 10; i++) {
+      if (i % 2 == 0) {
+        final value = (i * maxY / 10).toInt().toString();
+        final textSpan = TextSpan(text: value, style: textStyle);
+        textPainter.text = textSpan;
+        textPainter.layout();
+        textPainter.paint(
+          canvas,
+          Offset(-textPainter.width - 4,
+              size.height - i * cellHeight - textPainter.height / 2),
+        );
+      }
+    }
   }
 
   @override

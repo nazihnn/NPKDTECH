@@ -20,6 +20,31 @@ class _SensorPageState extends State<SensorPage> {
     "phosphorus": "Loading...",
     "potassium": "Loading..."
   };
+
+  // Add maps for storing units and colors
+  final Map<String, String> _units = {
+    "moisture": "%",
+    "nitrogen": "mg/kg",
+    "phosphorus": "mg/kg",
+    "potassium": "mg/kg"
+  };
+
+  // Add icons for each parameter
+  final Map<String, IconData> _icons = {
+    "moisture": Icons.water_drop,
+    "nitrogen": Icons.grass,
+    "phosphorus": Icons.science,
+    "potassium": Icons.emoji_nature
+  };
+
+  // Colors for each parameter
+  final Map<String, Color> _colors = {
+    "moisture": Colors.blue,
+    "nitrogen": Colors.green.shade700,
+    "phosphorus": Colors.orange,
+    "potassium": Colors.purple
+  };
+
   bool isConnected = false;
   String connectionError = "";
 
@@ -104,14 +129,21 @@ class _SensorPageState extends State<SensorPage> {
     super.dispose();
   }
 
+  String _getDisplayValue(String parameter, String value) {
+    if (value == "Loading..." || value == "No data") {
+      return value;
+    }
+    return "$value ${_units[parameter]}";
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: const BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            const Color(0xFF68BB7D),
-            const Color(0xFFA8E063),
+            Color(0xFF68BB7D),
+            Color(0xFFA8E063),
           ],
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
@@ -121,10 +153,46 @@ class _SensorPageState extends State<SensorPage> {
         children: [
           // Title Box
           Padding(
-            padding: const EdgeInsets.only(top: 20.0),
-            child: TitleBox(
-              title: "Soil Data",
-              icon: Icons.sensors,
+            padding: const EdgeInsets.only(top: 70.0, bottom: 8.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(12.0),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(50),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black26,
+                        blurRadius: 10,
+                        offset: Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: Icon(
+                    Icons.sensors,
+                    color: Colors.orange.shade700,
+                    size: 28,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Text(
+                  "Soil Data",
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                    shadows: [
+                      Shadow(
+                        color: Colors.black38,
+                        blurRadius: 2,
+                        offset: Offset(1, 1),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
           ),
 
@@ -135,7 +203,14 @@ class _SensorPageState extends State<SensorPage> {
               padding: const EdgeInsets.all(8.0),
               decoration: BoxDecoration(
                 color: Colors.red.shade100,
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(12),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 4,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
                 border: Border.all(color: Colors.red),
               ),
               child: Row(
@@ -156,66 +231,109 @@ class _SensorPageState extends State<SensorPage> {
 
           const SizedBox(height: 16),
 
-          // Data boxes
-          _buildDataBox("Nitrogen", npkData["nitrogen"] ?? "Loading..."),
-          const SizedBox(height: 10),
-          _buildDataBox("Phosphorus", npkData["phosphorus"] ?? "Loading..."),
-          const SizedBox(height: 10),
-          _buildDataBox("Potassium", npkData["potassium"] ?? "Loading..."),
-          const SizedBox(height: 10),
-          _buildDataBox("Moisture", npkData["moisture"] ?? "Loading..."),
+          // Data cards in a grid
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: GridView.count(
+                crossAxisCount: 2,
+                crossAxisSpacing: 16,
+                mainAxisSpacing: 16,
+                children: [
+                  _buildDataCard("nitrogen", "Nitrogen"),
+                  _buildDataCard("phosphorus", "Phosphorus"),
+                  _buildDataCard("potassium", "Potassium"),
+                  _buildDataCard("moisture", "Moisture"),
+                ],
+              ),
+            ),
+          ),
 
-          // Debug button
+          // Refresh button with better styling
           Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: ElevatedButton(
+            padding:
+                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+            child: ElevatedButton.icon(
               onPressed: () {
                 print("Manual data refresh requested");
                 _databaseRef.get().then((snapshot) {
                   print("Manual data fetch result: ${snapshot.value}");
+                  final data = snapshot.value as Map<dynamic, dynamic>?;
+                  _updateData(data);
                 }).catchError((error) {
                   print("Manual fetch error: $error");
                 });
               },
-              child: Text("Debug: Refresh Data"),
+              icon: Icon(Icons.refresh),
+              label: Text("Refresh Soil Data"),
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.deepOrange,
+                backgroundColor: Colors.orange.shade600,
                 foregroundColor: Colors.white,
-                padding: EdgeInsets.symmetric(horizontal: 5, vertical: 12),
+                padding: EdgeInsets.symmetric(vertical: 16),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30),
+                ),
+                elevation: 4,
+                minimumSize:
+                    Size(double.infinity, 0), // Makes button full width
               ),
             ),
-          ),
+          )
         ],
       ),
     );
   }
 
-  Widget _buildDataBox(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      child: Container(
-        padding: const EdgeInsets.all(16.0),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(
-            color: Colors.deepOrange.shade600,
-            width: 2,
+  Widget _buildDataCard(String parameter, String label) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 6,
+            offset: const Offset(0, 3),
           ),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              "$label:",
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        ],
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          // Icon with colored circle background
+          Container(
+            padding: EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: _colors[parameter]!.withOpacity(0.2),
+              shape: BoxShape.circle,
             ),
-            Text(
-              value,
-              style: const TextStyle(fontSize: 18),
+            child: Icon(
+              _icons[parameter],
+              size: 32,
+              color: _colors[parameter],
             ),
-          ],
-        ),
+          ),
+          SizedBox(height: 8),
+          // Parameter label
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Colors.black87,
+            ),
+          ),
+          SizedBox(height: 4),
+          // Value with units
+          Text(
+            _getDisplayValue(parameter, npkData[parameter] ?? "Loading..."),
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.w500,
+              color: _colors[parameter],
+            ),
+          ),
+        ],
       ),
     );
   }
