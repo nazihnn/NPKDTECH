@@ -83,9 +83,15 @@ After development, this is how the app looked with all the different interfaces 
 
 <img src="npk_application/images/robot.jpeg" alt="robot" width="200"/>
 
-## Include A Section That Tells Developers How To Install The App
-
+## How to Run
+```
+$ git clone https://github.com/nazihnn/NPKDTECH.git
+$ cd npk_application
+$ flutter pub get
+$ flutter run
+```
 
 ##  Contact Details
 
-Having Contact Details is also good as it shows people how to get in contact with you if they'd like to contribute to the app. 
+University: Ucabnn@ucl.ac.uk 
+Personal: Nazihnn@gmail.com
