@@ -65,6 +65,13 @@ After development, this is how the app looked with all the different interfaces 
 
 - **Linear Actuator** ⚙️  
   The **linear actuator** is used to control the sensors up and down
+### Sensor system 
+
+<div style="display: flex; flex-wrap: wrap; gap: 250px; justify-content: center;">
+
+
+  <img src="./npk_application/images/circuit1.jpeg" alt="circuit1" style="width: 350px; height: auto;">
+  <img src="./npk_application/images/circuit2.jpeg" alt="circuit2" style="width: 350px; height: auto;">
 
 ## Include A Section That Tells Developers How To Install The App
 
