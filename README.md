@@ -90,6 +90,9 @@ $ cd npk_application
 $ flutter pub get
 $ flutter run
 ```
+### Video
+
+https://youtu.be/CbEdYo30ldY
 
 ##  Contact Details
 
