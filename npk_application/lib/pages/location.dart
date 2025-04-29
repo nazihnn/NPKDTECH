@@ -173,7 +173,10 @@ class _LocationPageState extends State<LocationPage> {
       // Extract latitude and longitude directly from Outside node
       final latitudeStr = data["latitude"]?.toString() ?? "0.0";
       final longitudeStr = data["longitude"]?.toString() ?? "0.0";
-
+      print(
+          "Processing GPS location data after changing to string: $longitudeStr");
+      print(
+          "Processing GPS location data after changing to string: $latitudeStr");
       // Convert to numbers and remove quotes if present
       final latitudeClean = latitudeStr.replaceAll('"', '');
       final longitudeClean = longitudeStr.replaceAll('"', '');
@@ -182,6 +185,9 @@ class _LocationPageState extends State<LocationPage> {
         // Parse latitude and longitude
         gpsData["latitude"] = double.tryParse(latitudeClean) ?? 0;
         gpsData["longitude"] = double.tryParse(longitudeClean) ?? 0;
+        print("Longitude string before parsing: '$longitudeClean'");
+        final parsedLongitude = double.tryParse(longitudeClean);
+        print("Parsed longitude result: $parsedLongitude");
 
         // Only mark as connected if we have non-zero coordinates
         final hasValidCoordinates =
@@ -192,7 +198,7 @@ class _LocationPageState extends State<LocationPage> {
             ? ""
             : "GPS coordinates are (0,0). Waiting for valid data.";
       });
-
+      print("Longitude immediately after assignment: ${gpsData["longitude"]}");
       print(
           "State updated with GPS location: {lat: ${gpsData["latitude"]}, lng: ${gpsData["longitude"]}}");
 
